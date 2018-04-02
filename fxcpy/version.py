@@ -1,0 +1,8 @@
+__author__ = "James K Bowler"
+__copyright__ = "Copyright 2018"
+__license__ = "MIT"
+__version__ = "1.0.0"
+__maintainer__ = "JamesKbowler"
+__email__ = "james.bowler@datacentauri.com"
+__status__ = "Development"
+__url__ = "https://github.com/JamesKBowler/fxcpy"
