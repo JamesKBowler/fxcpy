@@ -175,11 +175,11 @@ To close all positions at the current market price we can extract trade_id's fro
 
 ### Price History
 
-FXCM has tons of free data, obtained through the `MarketData` class. 
+FXCM has tons of free data, which can be obtained through the `MarketData` class. 
 
 Note:
- >> FXCM servers will never return more than 300 bars of data in one API call.
- >> All datetime is stored in UTC and of type OLE automation, for instance `float(0.0) = datetime(1899,12,30)`, take a look in the utils directory.
+FXCM servers will never return more than 300 bars of data in one API call.
+All datetime is stored in UTC and of type OLE automation, for instance `float(0.0) = datetime(1899,12,30)`, take a look in the utils directory.
 
     from datetime import datetime
     from fxcpy.utils.date_utils import to_ole
