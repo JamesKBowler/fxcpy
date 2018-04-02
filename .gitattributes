@@ -1,0 +1,25 @@
+* text=auto
+fxcpy/* text
+ccp/lib/* binary
+
+cpp/* linguist-vendored
+install_script.sh linguist-vendored
+
+# Basic .gitattributes for a python repo.
+
+# Source files
+# ============
+*.pxd		text
+*.py 		text
+*.py3 		text
+*.pyw 		text
+*.pyx  		text
+
+# Binary files
+# ============
+*.db		binary
+*.p 		binary
+*.pkl 		binary
+*.pyc 		binary
+*.pyd		binary
+*.pyo 		binary
