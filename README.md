@@ -2,59 +2,84 @@
 - Ubuntu 16.04
 - boost 1.65.1  
 - cmake 3.9.6  
-- ForexConnectAPI 1.4.1  
+- ForexConnectAPI 1.4.1 (included)
 
 ### Install fxcpy  
 The installation script has been tested on Ubuntu 16.04, please read through the script and remove any elements that are already installed on your system. If boost 1.65.1 or greater has been installed using a different path than the usual `/usr:/usr/local...etc`, edit the commented values in the CMakeLists.txt file located in the `/cpp` directory.
 
+First download this repository.
+
+    ```shell    
+    git clone https://github.com/JamesKBowler/fxcpy.git
+    ```
+
+Switch to the `fxcpy/` directory.
+
+    ```shell
+    cd fxcpy/
+    ```
+
 Once happy with the script execute following.
-    
+
+    ```shell
     chmod +x install_script.sh && sudo ./install_script.sh
+    ```
 
 The script will add an environment variable to /etc/environment file, however this will not come into affect until your machine is either rebooted or logged out and back in.
 
 To find out more about environment variables, please read **[this](https://askubuntu.com/questions/866161/setting-path-variable-in-etc-environment-vs-profile?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa)** question on askubuntu.
 
+    ```shell
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/fxcpy/cpp/lib
+    ```
 
 After installation your system will have two modules, one called `forexconnect` and the other `fxcpy`. 
 
 The `forexconnect` module is a C++ Wrapper and `fxcpy` is the python implementation. Before using this API in a live trading environment I **highly recommend** that you test it first on a demo account which can be opened for free at https://www.fxcm.com/uk/forex-trading-demo/ 
 
-Having FXCMs Trading Station open at the same to see trades simultaneously executed is a good idea.
+Having FXCM's **[Trading Station](https://www.fxcm.com/uk/platforms/trading-station/download/)** open at the same to see trades simultaneously executed is a good idea.
 
 ### Basic Usage
 
 We won't dicuss best practices for storing passwords and for simplicity, create a setting.py file to hold your FXCM user, password, environment and url information.
 
 An example of such is.
-    
+
+    ```python
     # /fxcpy/fxcpy/settings.py
 
     USER = "DEM12345"
     PASS = "123456"
     URL = "http://www.fxcorporate.com/Hosts.jsp"
     ENV = "demo"  # or "real"
+    ```
 
 To get started create a session by logging into your FXCM account
-    
+
+    ```python
     from fxcpy.session_handler import SessionHandler
     from fxcpy.settings import USER, PASS, URL, ENV
 
     session_handler = SessionHandler(USER, PASS, URL, ENV, load_tables=True)
+    ```
 
 Checking the session status is achieved through the `SessionMonitoring` class, which is located inside the `SessionHandler`
-    
+
+    ```python
     status = session_handler.session_monitoring.get_status()
+    ```
 
 To obtain information for all offers at FXCM, get the `OffersTable` class from the `SessionHandler`
-    
+
+    ```python
     offers_table = session_handler.get_offers_table()
+    ```
 
 The Forexconnect API has no built in function to find attributes using the instrument symbol, so we must always pass the unique offer_id. Sure, one could build such a function, but this would mean looping over each row in the table on every call.
     
 All offer attributes are accessed through the `OffersTable` like this.
-    
+
+    ```python
     offer = offers_table.get_offer_ids()
 
     offer = {
@@ -77,6 +102,7 @@ All offer attributes are accessed through the `OffersTable` like this.
     }
     
     offers_table.get_contract_currency(offer['EUR/USD'])
+    ```
 
 Other tables such as:
     `OrdersTable`
@@ -87,18 +113,23 @@ Other tables such as:
 
 are accessed the same way.
 
+    ```python
     orders_table.get_whatever(order_id)
+    ```
 
 and so on ..
 
 Executing a trade is super easy using the`TradingCommands` class.
 
+    ```python
     trading_commands = session_handler.get_trading_commands()
+    ```
 
 Next, execute 5 SHORT trades for the EUR/USD, with stop loss and limit orders.
 
 This example will place a stop loss 15 pips above and a limit order 30 pips below the current price.
 
+    ```python
     # Setup order to execute at market with stop and limit order
     offer_id = "1" # EUR/USD
     # Master valuemap container
@@ -122,17 +153,21 @@ This example will place a stop loss 15 pips above and a limit order 30 pips belo
     trading_commands.execute_order(master_valuemap)
     # Lock the GIL until trade is executed.
     response_listener.wait_events()
+    ```
 
 Check out the `/tests` directory for more examples.
 
 Monitoring of trade execution is carried out using the `OrderMoitor` class, which is updated by the `TableListener`.
 
+    ```python
     order_monitor = session_handler.get_order_monitor()
 
     orders = order_monitor.get_monitors()
+    ```
 
 Monitors for each trade are contained with a dictionary, which are accessed using the `trade_id`
 
+    ```python
     monitors = order_monitor.get_monitors()
 
     {'91133665': <fxcpy.listeners.order.Order at 0x7fa038068630>,
@@ -151,9 +186,11 @@ Monitors for each trade are contained with a dictionary, which are accessed usin
     order.get_state()
 
     "OrderExecuted"
+    ```
 
 To close all positions at the current market price we can extract trade_id's from the `TradesTable` class.
-    
+
+    ```python
     master_valuemap = trading_commands.create_valuemap()
     for trade_id, offer_id in trades_table.get_trade_ids().items():
         direction = trades_table.get_buysell(trade_id)
@@ -172,27 +209,32 @@ To close all positions at the current market price we can extract trade_id's fro
         master_valuemap.appendChild(child_valuemap)
     trading_commands.execute_order(master_valuemap)
     response_listener.wait_events()
+    ```
 
 ### Price History
 
 FXCM has tons of free data, which can be obtained through the `MarketData` class. 
 
 Note:
-FXCM servers will never return more than 300 bars of data in one API call.
-All datetime is stored in UTC and of type OLE automation, for instance `float(0.0) = datetime(1899,12,30)`, take a look in the utils directory.
 
+..* FXCM servers will never return more than 300 bars of data in one API call.  
+..* All datetime is stored in UTC and of type OLE automation, for instance `float(0.0) = datetime(1899,12,30)`, take a look in the utils directory.  
+
+    ```python
     from datetime import datetime
     from fxcpy.utils.date_utils import to_ole
 
-    market_data = session_handler.get_market_data_factory()
+    market_data = session_handler.get_market_data()
 
     data_gen = market_data.get_price_data("GBP/USD", "D1", 0.0, to_ole(datetime.utcnow()))
 
     data = next(data_gen)
     print(data)
+    ```
 
 Generator returns a structured numpy array.
 
+    ```python
     np.array([
         ('2018-02-22T22:00:00', 1.39587, 1.40062, 1.39044, 1.3977 , 1.39506, 1.4005 , 1.39043, 1.39689, 315585),
         ('2018-02-25T22:00:00', 1.3991 , 1.40706, 1.39288, 1.39702, 1.3985 , 1.40695, 1.39275, 1.39651, 306833),
@@ -208,7 +250,7 @@ Generator returns a structured numpy array.
         dtype=[('date', '<M8[s]'), ('askopen', '<f8'), ('askhigh', '<f8'), ('asklow', '<f8'), ('askclose', '<f8'),
               ('bidopen', '<f8'), ('bidhigh', '<f8'), ('bidlow', '<f8'), ('bidclose', '<f8'), ('volume', '<i8')]
     )
-
+    ```
 
 ### Development
 

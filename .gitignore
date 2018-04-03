@@ -4,3 +4,4 @@ settings.py
 /cpp/build/
 /fxcpy/tests/live_chart.py
 /fxcpy/tests/fancy_chart.py
+/dist/
