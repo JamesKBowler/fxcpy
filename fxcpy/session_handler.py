@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-from fxcpy.listeners.session_status import SessionMonitoring
+from fxcpy.listeners.session_monitoring import SessionMonitoring
 from fxcpy.listeners.response_listener import ResponseListener
 from fxcpy.listeners.table_listener import TableListener
 
