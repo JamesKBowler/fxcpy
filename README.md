@@ -277,7 +277,7 @@ np.array([
 
 ### Charting
 
-Please see the /tests directory for completed example.
+Please see the `/tests` directory for a completed example.
 
 ```python
 # Collection attribs
@@ -290,7 +290,7 @@ time_frame = "D1"
 BasicChart(market_data).graph(instrument, time_frame, dtfm, dtto)
 ```
 
-![alt tag](https://drive.google.com/open?id=1umTXMCiQSSCPnkwpvHCoiMwTydHCxGTN)
+![alt tag](fxcpy/chart/chart_example.JPG)
 
 
 ### Development
