@@ -9,7 +9,7 @@ fxcpy is an open-soured python implementation of the Forexconnect API SDK offere
     * `TradesTable` - once orders are executed, trades are inserted and tracked with various attributes.
     * `ClosedTradesTable` - contains trades that are closed for the current trading day.
     * `SummaryTable` - contains summarised information for every instrument with an open position. 
-    * `MessagesTable` - deals with messages sent from the trading server, such margin as call.
+    * `MessagesTable` - deals with messages sent from the trading server, such as a margin call.
 
 * **Trading** - fxcpy is very flexible with many options for executing different types of orders.
     * OCO (One-Cancels-Other)
@@ -63,7 +63,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/fxcpy/cpp/lib
 
 After installation your system will have two modules `forexconnect` and `fxcpy`. Oh and `pandas` if not already installed.
 
-The `forexconnect` module is a C++ Wrapper and `fxcpy` is the python implementation. Before using this API in a live trading environment, I **highly recommend** testing it first on a demo account, opened for free at https://www.fxcm.com/uk/forex-trading-demo/ 
+The `forexconnect` module is a C++ Wrapper and `fxcpy` is the python implementation. Before using this API in a live trading environment, I **highly recommend** testing it first on a demo account, opened for free at **[FXCM](https://www.fxcm.com/uk/forex-trading-demo/ )**
 
 Having FXCM's **[Trading Station](https://www.fxcm.com/uk/platforms/trading-station/download/)** open at the same to see trades simultaneously executed is a good idea.
 
