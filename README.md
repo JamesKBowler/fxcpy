@@ -9,7 +9,7 @@ fxcpy is an open-soured python implementation of the Forexconnect API SDK offere
     * `TradesTable` - once orders are executed, trades are inserted and tracked with various attributes.
     * `ClosedTradesTable` - contains trades that are closed for the current trading day.
     * `SummaryTable` - contains summarised information for every instrument with an open position. 
-    * `MessagesTable` - deals with messages sent from the trading server, such margin call.
+    * `MessagesTable` - deals with messages sent from the trading server, such margin as call.
 
 * **Trading** - fxcpy is very flexible with many options for executing different types of orders.
     * OCO (One-Cancels-Other)
@@ -30,7 +30,7 @@ fxcpy is an open-soured python implementation of the Forexconnect API SDK offere
 - cmake 3.9.6  
 - ForexConnectAPI 1.4.1 (included)
 
-### Installation  
+## Installation  
 A large part of installing this API has to do with Boost & CMAKE, therefore the `install_script.sh` includes the installation of both and this API. Currently, Ubuntu 16.04 is supported, there are no plans to support the Windows operating system. However, support will be added for other Linux variants shortly.
 
 Please become familiar with the installation process and remove any elements already installed on your system. If boost 1.65.1 or higher is installed using a different path than the usual `/usr:/usr/local...etc`, edit the commented values in the CMakeLists.txt file located in the `/cpp` directory.
@@ -67,7 +67,7 @@ The `forexconnect` module is a C++ Wrapper and `fxcpy` is the python implementat
 
 Having FXCM's **[Trading Station](https://www.fxcm.com/uk/platforms/trading-station/download/)** open at the same to see trades simultaneously executed is a good idea.
 
-### Basic Usage
+## Basic Usage
 
 We won't discuss best practices for storing passwords and for simplicity, create a setting.py file to hold your FXCM user, password, environment and url information.
 
@@ -132,7 +132,7 @@ offer = {
 offers_table.get_contract_currency(offer['EUR/USD'])
 ```
 
-All other tables such as are accessed the same way.
+All other tables are accessed the same way.
 
 ```python
 orders_table.get_whatever(order_id)
@@ -147,7 +147,7 @@ Executing a trade is super easy using the`TradingCommands` class.
 trading_commands = session_handler.get_trading_commands()
 ```
 
-Next, execute 5 SHORT trades for the EUR/USD, with stop loss and limit orders.
+Next, execute 5 SHORT trades for the EUR/USD, with stop loss and limit orders with one API call.
 
 This example will place a stop loss 15 pips above and a limit order 30 pips below the current price.
 
@@ -173,7 +173,7 @@ for i in range(5):
     )
 # Execute
 trading_commands.execute_order(master_valuemap)
-# Lock the GIL until trade is executed.
+# Lock the GIL (global interpreter lock) until trade is executed.
 response_listener.wait_events()
 ```
 
@@ -241,7 +241,7 @@ FXCM has tons of free data, and the `MarketData` class will provide access to th
 Note:
 
 * FXCM servers will never return more than 300 bars of data in one API call.  
-* All datetime is stored in UTC and of type OLE automation, for instance `float(0.0) = datetime(1899,12,30)`, take a look in the utils directory.  
+* All datetime is stored in UTC and of type OLE automation, for instance `float(0.0) = datetime(1899,12,30)`, take a look in the `/utils` directory.  
 
 ```python
 from datetime import datetime
@@ -274,6 +274,24 @@ np.array([
           ('bidopen', '<f8'), ('bidhigh', '<f8'), ('bidlow', '<f8'), ('bidclose', '<f8'), ('volume', '<i8')]
 )
 ```
+
+### Charting
+
+Please see the /tests directory for completed example.
+
+```python
+# Collection attribs
+dtto = datetime.utcnow()
+dtfm = dtto - timedelta(days=200)
+instrument = "GBP/USD"
+time_frame = "D1"
+
+# Plot chart
+BasicChart(market_data).graph(instrument, time_frame, dtfm, dtto)
+```
+
+![alt tag](https://drive.google.com/open?id=1umTXMCiQSSCPnkwpvHCoiMwTydHCxGTN)
+
 
 ### Development
 
