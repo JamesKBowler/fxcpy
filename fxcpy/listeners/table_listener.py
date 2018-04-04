@@ -44,7 +44,7 @@ from forexconnect import (
     Accounts
 )
 
-from .order_printer import print_order_monitor
+from fxcpy.utils.print_order import print_order_monitor
 
 from .order_monitor import OrderMonitor
 

@@ -37,4 +37,4 @@ class Log(object):
         self.logger = logging.getLogger('root')
         FORMAT = "[%(asctime)s %(levelname)s %(filename)s:%(lineno)s] - %(funcName)s() %(message)s"
         logging.basicConfig(format=FORMAT)
-        self.logger.setLevel(10)
+        self.logger.setLevel(20)
