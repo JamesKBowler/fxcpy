@@ -1,11 +1,39 @@
+# fxcpy
+fxcpy is an open-soured python implementation of the Forexconnect API SDK offered by FXCM. The full documentation can be found **[here](http://fxcodebase.com/bin/forexconnect/1.4.1/help/CPlusPlus/web-content.html#index.html)**
+
+# Current Features
+* **Trading Tables** - fxcpy supports all trading tables in memory for fast access updated automatically by the trading server.
+    * `AccountsTable` -  contains the data such as account balance, used margin, daily PnL, Gross PnL etc...
+    * `OffersTable` - all instrument attributes, such as symbol, live bid/ask pricing, point-size, contract currency etc ...
+    * `OrdersTable` - holds order attributes until the are executed.
+    * `TradesTable` - once orders are executed, trades are inserted and tracked with various attributes.
+    * `ClosedTradesTable` - contains trades that are closed for the current trading day.
+    * `SummaryTable` - contains summarised information for every instrument with an open position. 
+    * `MessagesTable` - deals with messages sent from the trading server, such margin call.
+
+* **Trading** - fxcpy is very flexible with many options for executing different types of orders.
+    * OCO (One-Cancels-Other)
+    * OTO (One-Triggers-Others)
+    * OTOCO (One-Triggers-OCO)
+    * Limit, Entry Limit, Trailing Entry Limit
+    * Open/Close Market, Market Range
+    * Open/Close Limit, Limit Range
+    * Stop, Entry Stop, Trailing Stop
+    * NET Orders
+    * Order cloning 
+
+* **Data** - fxcpy supports both live streaming and historical price data
+
 ## Requirements  
 - Ubuntu 16.04
 - boost 1.65.1  
 - cmake 3.9.6  
 - ForexConnectAPI 1.4.1 (included)
 
-### Install fxcpy  
-The installation script has been tested on Ubuntu 16.04, please read through the script and remove any elements that are already installed on your system. If boost 1.65.1 or greater has been installed using a different path than the usual `/usr:/usr/local...etc`, edit the commented values in the CMakeLists.txt file located in the `/cpp` directory.
+### Installation  
+A large part of installing this API has to do with Boost & CMAKE, therefore the `install_script.sh` includes the installation of both and this API. Currently, Ubuntu 16.04 is supported, there are no plans to support the Windows operating system. However, support will be added for other Linux variants shortly.
+
+Please become familiar with the installation process and remove any elements already installed on your system. If boost 1.65.1 or higher is installed using a different path than the usual `/usr:/usr/local...etc`, edit the commented values in the CMakeLists.txt file located in the `/cpp` directory.
 
 First download this repository.
 
@@ -25,7 +53,7 @@ Once happy with the script execute following.
 chmod +x install_script.sh && sudo ./install_script.sh
 ```
 
-The script will add an environment variable to /etc/environment file, however this will not come into affect until your machine is either rebooted or logged out and back in.
+The script will add an environment variable to /etc/environment file. However, this will not come into effect until your machine is either rebooted or logged out and back in.
 
 To find out more about environment variables, please read **[this](https://askubuntu.com/questions/866161/setting-path-variable-in-etc-environment-vs-profile?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa)** question on askubuntu.
 
@@ -33,15 +61,15 @@ To find out more about environment variables, please read **[this](https://askub
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/fxcpy/cpp/lib
 ```
 
-After installation your system will have two modules, one called `forexconnect` and the other `fxcpy`. 
+After installation your system will have two modules `forexconnect` and `fxcpy`. Oh and `pandas` if not already installed.
 
-The `forexconnect` module is a C++ Wrapper and `fxcpy` is the python implementation. Before using this API in a live trading environment I **highly recommend** that you test it first on a demo account which can be opened for free at https://www.fxcm.com/uk/forex-trading-demo/ 
+The `forexconnect` module is a C++ Wrapper and `fxcpy` is the python implementation. Before using this API in a live trading environment, I **highly recommend** testing it first on a demo account, opened for free at https://www.fxcm.com/uk/forex-trading-demo/ 
 
 Having FXCM's **[Trading Station](https://www.fxcm.com/uk/platforms/trading-station/download/)** open at the same to see trades simultaneously executed is a good idea.
 
 ### Basic Usage
 
-We won't dicuss best practices for storing passwords and for simplicity, create a setting.py file to hold your FXCM user, password, environment and url information.
+We won't discuss best practices for storing passwords and for simplicity, create a setting.py file to hold your FXCM user, password, environment and url information.
 
 An example of such is.
 
@@ -63,7 +91,7 @@ from fxcpy.settings import USER, PASS, URL, ENV
 session_handler = SessionHandler(USER, PASS, URL, ENV, load_tables=True)
 ```
 
-Checking the session status is achieved through the `SessionMonitoring` class, which is located inside the `SessionHandler`
+Monitoring session status is carried out through the `SessionMonitoring` class,  located within the `SessionHandler`
 
 ```python
 status = session_handler.session_monitoring.get_status()
@@ -75,7 +103,7 @@ To obtain information for all offers at FXCM, get the `OffersTable` class from t
 offers_table = session_handler.get_offers_table()
 ```
 
-The Forexconnect API has no built in function to find attributes using the instrument symbol, so we must always pass the unique offer_id. Sure, one could build such a function, but this would mean looping over each row in the table on every call.
+The Forexconnect API has no built-in function to find attributes using the instrument symbol, so we must always pass the unique `offer_id`. Sure, one could build such a feature. However, this would involve looping over each row in the table on every call.
     
 All offer attributes are accessed through the `OffersTable` like this.
 
@@ -104,17 +132,11 @@ offer = {
 offers_table.get_contract_currency(offer['EUR/USD'])
 ```
 
-Other tables such as:
-    `OrdersTable`
-    `TradesTable`
-    `ClosedTradesTable`
-    `SummaryTable`
-    `MessagesTable`
-
-are accessed the same way.
+All other tables such as are accessed the same way.
 
 ```python
 orders_table.get_whatever(order_id)
+trades_table.get_whatever(trade_id)
 ```
 
 and so on ..
@@ -165,7 +187,7 @@ order_monitor = session_handler.get_order_monitor()
 orders = order_monitor.get_monitors()
 ```
 
-Monitors for each trade are contained with a dictionary, which are accessed using the `trade_id`
+Each `trade_id` has its own monitoring class, with each subsequent order appended to the initial trade conveniently wrapped in a dictionary.
 
 ```python
 monitors = order_monitor.get_monitors()
@@ -177,6 +199,7 @@ monitors = order_monitor.get_monitors()
  ...
  ...}
 
+# Access using trade_id
 order = monitors['91133665']
 
 order.get_result()
@@ -188,7 +211,7 @@ order.get_state()
 "OrderExecuted"
 ```
 
-To close all positions at the current market price we can extract trade_id's from the `TradesTable` class.
+To close all positions at the current market price, extract trade attributes from the `TradesTable` class.
 
 ```python
 master_valuemap = trading_commands.create_valuemap()
@@ -213,7 +236,7 @@ response_listener.wait_events()
 
 ### Price History
 
-FXCM has tons of free data, which can be obtained through the `MarketData` class. 
+FXCM has tons of free data, and the `MarketData` class will provide access to these data.
 
 Note:
 
@@ -254,9 +277,9 @@ np.array([
 
 ### Development
 
-There is a lot of testing to be completed and I am slowly working through it in my spare time.
+There is a lot of testing to be completed, and I am slowly working on it in my spare time.
 
-Feel free to offer advice for any improvements.
+Feel free to offer advice on any improvements.
 
 # License Terms  
 
