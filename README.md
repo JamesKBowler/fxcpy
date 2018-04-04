@@ -5,7 +5,7 @@ fxcpy is an open-soured python implementation of the Forexconnect API SDK offere
 * **Trading Tables** - fxcpy supports all trading tables in memory for fast access updated automatically by the trading server.
     * `AccountsTable` -  contains the data such as account balance, used margin, daily PnL, Gross PnL etc...
     * `OffersTable` - all instrument attributes, such as symbol, live bid/ask pricing, point-size, contract currency etc ...
-    * `OrdersTable` - holds order attributes until the are executed.
+    * `OrdersTable` - holds order attributes until they are executed.
     * `TradesTable` - once orders are executed, trades are inserted and tracked with various attributes.
     * `ClosedTradesTable` - contains trades that are closed for the current trading day.
     * `SummaryTable` - contains summarised information for every instrument with an open position. 
