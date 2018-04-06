@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/JamesKBowler/fxcpy.svg?branch=master)](https://travis-ci.org/JamesKBowler/fxcpy)
+[![Coverage Status](https://coveralls.io/repos/github/JamesKBowler/fxcpy/badge.svg?branch=master)](https://coveralls.io/github/JamesKBowler/fxcpy?branch=master)
+
 # fxcpy
 fxcpy is an open-soured python implementation of the Forexconnect API SDK offered by FXCM. The full documentation can be found **[here](http://fxcodebase.com/bin/forexconnect/1.4.1/help/CPlusPlus/web-content.html#index.html)**
 
@@ -257,11 +260,10 @@ Note:
 
 ```python
 from datetime import datetime
-from fxcpy.utils.date_utils import to_ole
 
 market_data = session_handler.get_market_data()
 
-data_gen = market_data.get_price_data("GBP/USD", "D1", 0.0, to_ole(datetime.utcnow()))
+data_gen = market_data.get_price_data("GBP/USD", "D1", datetime(2018,2,22,22,0), datetime(2018,3,9,22,0))
 
 data = next(data_gen)
 print(data)
