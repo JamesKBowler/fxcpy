@@ -17,10 +17,59 @@ before_install:
     - sudo add-apt-repository -y "deb http://security.ubuntu.com/ubuntu xenial-security universe"
     - sudo add-apt-repository -y "deb http://security.ubuntu.com/ubuntu xenial-security multiverse"
     - sudo apt update
-    - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/fxcpy/cpp/lib
+    - sudo apt-get -y install python3-pip
+    - sudo apt-get -y install build-essential
+    - sudo apt-get -y install python3-dev
+    - sudo apt-get -y install libtool m4 automake autogen
+    - sudo apt-get -y install libcurl4-openssl-dev
+    - sudo apt-get -y install zlib1g-dev
+    - sudo pip3 install ipython
+    - mkdir ~/.boost_install
+    - cd ~/.boost_install
+    - wget https://github.com/libuv/libuv/archive/v1.19.1/libuv-1.19.1.tar.gz
+    - tar -xvzf libuv-1.19.1.tar.gz > /dev/null
+    - cd ~/.boost_install/libuv-1.19.1
+    - sh autogen.sh  &&
+      ./configure --prefix=/usr/local \
+                  --disable-static &&
+      make > /dev/null
+    - sudo make install -j2 > /dev/null
+    - cd ~/.boost_install
+    - wget http://www.libarchive.org/downloads/libarchive-3.3.2.tar.gz
+    - tar -xvzf libarchive-3.3.2.tar.gz > /dev/null
+    - cd ~/.boost_install/libarchive-3.3.2 &&
+      ./configure --prefix=/usr/local \
+                  --disable-static &&
+      make > /dev/null
+    - sudo make install -j2 > /dev/null
+    - cd ~/.boost_install
+    - wget https://cmake.org/files/v3.9/cmake-3.9.6.tar.gz
+    - tar -xvzf cmake-3.9.6.tar.gz > /dev/null
+    - cd ~/.boost_install/cmake-3.9.6
+    - sed -i '/"lib64"/s/64//' Modules/GNUInstallDirs.cmake &&
+      ./bootstrap --prefix=/usr/local          \
+                --system-libs                  \
+                --mandir=/usr/local/share/man  \
+                --no-system-jsoncpp            \
+                --no-system-librhash           \
+                --docdir=/usr/local/share/doc/cmake-3.9.6 &&
+      make > /dev/null
+    - sudo make install -j2 > /dev/null
+    - cd ~/.boost_install
+    - wget https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz
+    - tar -xvzf boost_1_65_1.tar.gz > /dev/null
+    - cd ~/.boost_install/boost_1_65_1 &&
+      ./bootstrap.sh --prefix=/usr/local          \
+            --with-python=/usr/bin/python3        \
+            --with-python-version=3.5             \
+            --with-python-root=/usr/lib/python3.5 \
+            --with-libraries=python
+    - ./b2 stage threading=multi link=shared -j 2 > /dev/null
+    - ./b2 install threading=multi link=shared -j 2 > /dev/null
 install:
-    - cd JamesKBowler/fxcpy/fxcpy/cpp && mkdir build && cd JamesKBowler/fxcpy/fxcpy/cpp/build
+    - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/fxcpy/cpp/lib
+    - cd cpp && mkdir build && cd build
     - cmake ..
     - sudo make install -j2
-    - cd JamesKBowler/fxcpy
+    - cd ..
     - pip3 install . --no-cache-dir
