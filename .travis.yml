@@ -1,12 +1,26 @@
 language: cpp
 os:
-  - linux
+    - linux
+dist: 
+    - xenial  
 compiler:
-  - gcc
+    - gcc
 before_install:
-  - sudo apt update
-  - sudo add-apt-repository -y "deb http://gb.archive.ubuntu.com/ubuntu/ xenial universe"
-  - sudo add-apt-repository -y "deb http://gb.archive.ubuntu.com/ubuntu/ xenial-updates main restricted"
-  - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/fxcpy/cpp/lib
+    - sudo add-apt-repository -y "deb http://gb.archive.ubuntu.com/ubuntu/ xenial main restricted"
+    - sudo add-apt-repository -y "deb http://gb.archive.ubuntu.com/ubuntu/ xenial-updates main restricted"
+    - sudo add-apt-repository -y "deb http://gb.archive.ubuntu.com/ubuntu/ xenial universe"
+    - sudo add-apt-repository -y "deb http://gb.archive.ubuntu.com/ubuntu/ xenial-updates universe"
+    - sudo add-apt-repository -y "deb http://gb.archive.ubuntu.com/ubuntu/ xenial multiverse"
+    - sudo add-apt-repository -y "deb http://gb.archive.ubuntu.com/ubuntu/ xenial-updates multiverse"
+    - sudo add-apt-repository -y "deb http://gb.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe multiverse"
+    - sudo add-apt-repository -y "deb http://security.ubuntu.com/ubuntu xenial-security main restricted"
+    - sudo add-apt-repository -y "deb http://security.ubuntu.com/ubuntu xenial-security universe"
+    - sudo add-apt-repository -y "deb http://security.ubuntu.com/ubuntu xenial-security multiverse"
+    - sudo apt update
+    - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/fxcpy/cpp/lib
 install:
-  - chmod +x install_script.sh && sudo ./install_script.sh > /dev/null
+    - cd ~/fxcpy/cpp && mkdir build && cd ~/fxcpy/cpp/build
+    - cmake ..
+    - sudo make install -j2
+    - cd ~/fxcpy
+    - pip3 install . --no-cache-dir
