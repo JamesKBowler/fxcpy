@@ -47,12 +47,12 @@ pwd
 su $SUDO_USER << 'EOF'
 cd .boost_install
 wget https://github.com/libuv/libuv/archive/v1.19.1/libuv-1.19.1.tar.gz
-tar -xvzf libuv-1.19.1.tar.gz
+tar -xvzf libuv-1.19.1.tar.gz > /dev/null
 cd libuv-1.19.1
 sh autogen.sh  &&
 ./configure --prefix=/usr/local \
             --disable-static &&
-make
+make -s
 EOF
 cd .boost_install/libuv-1.19.1
 make install -j2
@@ -65,11 +65,11 @@ make install -j2
 cd ..                           
 su $SUDO_USER << 'EOF'
 wget http://www.libarchive.org/downloads/libarchive-3.3.2.tar.gz
-tar -xvzf libarchive-3.3.2.tar.gz
+tar -xvzf libarchive-3.3.2.tar.gz > /dev/null
 cd libarchive-3.3.2
 ./configure --prefix=/usr/local \
 	    --disable-static &&
-make
+make -s
 EOF
 cd libarchive-3.3.2
 make install -j2
@@ -82,7 +82,7 @@ make install -j2
 cd ..                                                                 
 su $SUDO_USER << 'EOF'
 wget https://cmake.org/files/v3.9/cmake-3.9.6.tar.gz
-tar -xvzf cmake-3.9.6.tar.gz
+tar -xvzf cmake-3.9.6.tar.gz > /dev/null
 cd cmake-3.9.6
 sed -i '/"lib64"/s/64//' Modules/GNUInstallDirs.cmake &&
 ./bootstrap --prefix=/usr/local            \
@@ -104,7 +104,7 @@ make install -j2
 cd ..                                                                    
 su $SUDO_USER << 'EOF'
 wget https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz
-tar -xvzf boost_1_65_1.tar.gz
+tar -xvzf boost_1_65_1.tar.gz > /dev/null
 cd boost_1_65_1
 sed -e '/using python/ s@;@: /usr/include/python${PYTHON_VERSION/3*/${PYTHON_VERSION}m} ;@' \
     -i bootstrap.sh
