@@ -20,15 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-from ..exception import RequestTimeOutError
+from fxcpy.exception import RequestTimeOutError
 
 from forexconnect import (
     MarketDataSnapshot,
     O2GCandleOpenPriceMode
 )
 
-from ..utils.date_utils import fm_ole
+from fxcpy.utils.date_utils import to_ole, fm_ole
 
+from datetime import datetime, timedelta
 import numpy as np
 
 
@@ -49,6 +50,16 @@ class MarketData(object):
         self.response_listener = response_listener
         self.response_reader_factory = response_reader_factory
         self.request_factory = request_factory
+        MAJORPAIR='GBP/USD'
+        DAILY='D1'
+        data_gen = self.get_price_data(MAJORPAIR, DAILY, -1.0,0.0)
+        data = next(data_gen)
+        init_dt = data['date'].max().item()
+        if init_dt.weekday() == 6: # Its Sunday
+            self._wk_str = init_dt
+        else:
+            self._wk_str = init_dt - timedelta(days=init_dt.weekday()+1)
+        self._wk_end = self._wk_str + timedelta(days=5)
 
     def dtype(self):
         """
@@ -67,7 +78,10 @@ class MarketData(object):
         PriceMode=O2GCandleOpenPriceMode.PreviousClose
     ):  
         """
-        Params : str "GBP/USD", str "D1", float 0.0, float 0.0
+        Params :
+            str "GBP/USD", str "D1", float 0.0, float 0.0
+        or 
+            str "GBP/USD", str "D1", datetime, datetime
         
         Optional :
             > bool for weekend data
@@ -90,11 +104,17 @@ class MarketData(object):
                   ('bidopen', '<f8'), ('bidhigh', '<f8'), ('bidlow', '<f8'), ('bidclose', '<f8'), ('volume', '<i8')]
         )
         """
+        if isinstance(dtFrom, datetime):
+            dtFrom = to_ole(dtFrom)
+        if isinstance(dtTo, datetime):
+            dtTo = to_ole(dtTo)
+            
         # Date param check
         if not isinstance(dtFrom, float) or not isinstance(dtTo, float):
             raise AttributeError(
-                "Dates must be float (OLE Automation)"
+                "Dates must be float (OLE Automation) or python datetime"
             )
+            
         # Timeframe param check
         timeframeCollection = self.request_factory.getTimeFrameCollection()
         _timeframe = timeframeCollection.get(timeframe)
@@ -159,3 +179,67 @@ class MarketData(object):
                     yield np.array(rows, dtype=self.dtype())
                 else:
                     break
+                    
+    def check_bars(self, a):
+        """
+        Optional integrity check
+        """
+        if not type(a).__name__ == 'ndarray':
+            raise AttributeError("Data must be numpy.ndarray")
+        a = a[a['askhigh'] >= a['asklow']]
+        a = a[a['askhigh'] >= a['askopen']]
+        a = a[a['asklow'] <= a['askopen']]
+        a = a[a['askhigh'] >= a['askclose']]
+        a = a[a['asklow'] <= a['askclose']]
+        a = a[a['bidhigh'] >= a['bidlow']]
+        a = a[a['bidhigh'] >= a['bidopen']]
+        a = a[a['bidlow'] <= a['bidopen']]
+        a = a[a['bidhigh'] >= a['bidclose']]
+        a = a[a['bidlow'] <= a['bidclose']]
+        a = a[a['volume'] >= 0]
+        idx = np.unique(a['date'][::-1], return_index=True)[1]
+        return a[::-1][idx][::-1]
+                    
+    def get_open_datetime(self, offer):
+        """
+        Tries to determine what time the market opened for a given 
+        offer by returning the earliest minutely datetime value
+        of the current trading day.
+        
+        Returns `None` if market has not opened yet.
+        """
+        utc_now = datetime.utcnow().replace(second=0,microsecond=0)
+        midnight = utc_now.replace(hour=0,minute=0)
+        try:
+            data_gen = self.get_price_data(
+                offer, 'H1', midnight, utc_now)    
+            data = next(data_gen)
+            lowest_hour = data['date'].min().item()
+            if lowest_hour >= midnight:
+                # Market has been open today.
+                data_gen = self.get_price_data(
+                    offer, 'm1', midnight,
+                    lowest_hour+timedelta(minutes=60)
+                )
+                data = next(data_gen)
+                return data['date'].min().item()
+            else:
+                # No data for the current day
+                return None
+        except StopIteration:
+            # No data for the current day
+            return None
+
+    def get_trading_week(self):
+        """
+        Returns the current trading week range.
+        """
+        return self._wk_str, self._wk_end
+
+    def get_current_bar(self, offer, time_frame):
+        """
+        Gets the current bar date time
+        """
+        data_gen = self.get_price_data(offer, time_frame, -1.0,0.0)
+        data = next(data_gen)
+        return data['date'].max().item()

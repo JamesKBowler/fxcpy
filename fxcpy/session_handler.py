@@ -260,3 +260,7 @@ class SessionHandler(object):
             return self._trade_settings_provider
         else:
             return None
+        
+    def whoami(self):
+        return "fxcm"
+    

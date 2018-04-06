@@ -1,7 +1,7 @@
 __author__ = "James K Bowler"
 __copyright__ = "Copyright 2018"
 __license__ = "MIT"
-__version__ = "1.2.2a1"
+__version__ = "1.2.2a7"
 __maintainer__ = "JamesKbowler"
 __email__ = "james.bowler@datacentauri.com"
 __status__ = "Development"

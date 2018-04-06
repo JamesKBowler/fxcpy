@@ -1,7 +1,7 @@
 # fxcpy
 fxcpy is an open-soured python implementation of the Forexconnect API SDK offered by FXCM. The full documentation can be found **[here](http://fxcodebase.com/bin/forexconnect/1.4.1/help/CPlusPlus/web-content.html#index.html)**
 
-# Current Features
+## Current Features
 * **Trading Tables** - fxcpy supports all trading tables in memory for fast access updated automatically by the trading server.
     * `AccountsTable` -  contains the data such as account balance, used margin, daily PnL, Gross PnL etc...
     * `OffersTable` - all instrument attributes, such as symbol, live bid/ask pricing, point-size, contract currency etc ...
@@ -152,27 +152,39 @@ Next, execute 5 SHORT trades for the EUR/USD, with stop loss and limit orders wi
 This example will place a stop loss 15 pips above and a limit order 30 pips below the current price.
 
 ```python
-# Setup order to execute at market with stop and limit order
-offer_id = "1" # EUR/USD
+# Instrument
+offer_id = offer['EUR/USD']
+# Point Size
+psize = offers_table.get_point_size(offer_id)  # 0.0001
+# 15 pip Stop Loss Order
+stop = offers_table.get_bid(offer_id) + 15.0 * psize
+# 30 pip Limit Order
+limit = offers_table.get_bid(offer_id) - 30.0 * psize
+# Order amount
+amount = 1  # 1k lot
+# BuySell direction
+buysell = "S"  # Short
+
 # Master valuemap container
-master_valuemap = trading_commands.create_valuemap()
+master = trading_commands.create_valuemap()
 for i in range(5):
     # Create the order
-    child_valuemap = trading_commands.create_open_market_order(offer_id, "S", 1)
-    master_valuemap.appendChild(child_valuemap)
-    # 15 pip stop
-    rate_stop = offers_table.get_bid(offer_id) + 15.0 * offers_table.get_point_size(offer_id)
-    # 30 pip profit
-    rate_limit = offers_table.get_bid(offer_id) - 30.0 * offers_table.get_point_size(offer_id)
-    # Attach
-    master_valuemap = trading_commands.attach_stoplimit_orders(
-            i, # valuemap index
-            master_valuemap,
-            rate_stop=rate_stop, 
-            rate_limit=rate_limit
+    child = trading_commands.create_open_market_order(
+        offer_id,
+        buysell,
+        amount
     )
-# Execute
-trading_commands.execute_order(master_valuemap)
+    # Attach Market order to the master_valuemap
+    master.appendChild(child)
+    # Attach Limit & Stop Order to the child valuemap
+    master = trading_commands.attach_stoplimit_orders(
+            i, # valuemap index
+            master,
+            rate_stop=stop, 
+            rate_limit=limit
+    )
+# Execute with one API call
+trading_commands.execute_order(master)
 # Lock the GIL (global interpreter lock) until trade is executed.
 response_listener.wait_events()
 ```
@@ -291,7 +303,6 @@ BasicChart(market_data).graph(instrument, time_frame, dtfm, dtto)
 ```
 
 ![alt tag](fxcpy/chart/chart_example.JPG)
-
 
 ### Development
 

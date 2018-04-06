@@ -1,0 +1,18 @@
+# Include the README
+include *.md
+
+# Include the license file
+include LICENSE
+
+# Include Forexconnect C++ Lib
+recursive-include cpp *
+
+# Include install script
+include install_script.sh
+
+# Include chart image
+include fxcpy/chart/chart_example.JPG
+include fxcpy/chart/basic_chart.py
+
+exclude fxcpy/settings.py
+recursive-exclude cpp/build/ *
