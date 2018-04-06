@@ -19,8 +19,8 @@ before_install:
     - sudo apt update
     - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/fxcpy/cpp/lib
 install:
-    - cd ~/fxcpy/cpp && mkdir build && cd ~/fxcpy/cpp/build
+    - cd JamesKBowler/fxcpy/fxcpy/cpp && mkdir build && cd JamesKBowler/fxcpy/fxcpy/cpp/build
     - cmake ..
     - sudo make install -j2
-    - cd ~/fxcpy
+    - cd JamesKBowler/fxcpy
     - pip3 install . --no-cache-dir
