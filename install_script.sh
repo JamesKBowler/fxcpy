@@ -114,10 +114,10 @@ sed -e '/using python/ s@;@: /usr/include/python${PYTHON_VERSION/3*/${PYTHON_VER
         --with-python-root=/usr/lib/python3.5 \
         --with-libraries=python
 echo "using python : 3.5 : /usr/bin/python3.5 : /usr/include/python3.5m : /usr/lib ;" >> project-config.jam
-./b2 stage threading=multi link=shared -j 2
+./b2 stage threading=multi link=shared -j2 -d0
 EOF
 cd boost_1_65_1
-./b2 install threading=multi link=shared -j 2
+./b2 install threading=multi link=shared -j2 -d0
 #      ____                         ___        ____          ____ 
 #     / __/  ___________  __  __   <  /       / __ \        / __ \
 #    / /_| |/_/ ___/ __ \/ / / /   / /       / / / /       / / / /

@@ -8,7 +8,7 @@ compiler:
     - gcc
 sudo:
     - true
-install:
+before install:
     - sudo add-apt-repository -y 'deb http://gb.archive.ubuntu.com/ubuntu/ xenial main restricted'
     - sudo add-apt-repository -y 'deb http://gb.archive.ubuntu.com/ubuntu/ xenial-updates main restricted'
     - sudo add-apt-repository -y 'deb http://gb.archive.ubuntu.com/ubuntu/ xenial universe'
