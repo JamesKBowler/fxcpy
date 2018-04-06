@@ -4,7 +4,8 @@ os:
 compiler:
   - gcc
 before_install:
-  - sudo add-apt-repository -y "deb http://archive.ubuntu.com/ubuntu/ trusty main universe"
+  - sudo add-apt-repository -y "deb http://gb.archive.ubuntu.com/ubuntu/ xenial universe"
+  - sudo add-apt-repository -y "deb http://gb.archive.ubuntu.com/ubuntu/ xenial-updates main restricted"
   - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/fxcpy/cpp/lib
 install:
-  - chmod +x install_script.sh && sudo ./install_script.sh
+  - chmod +x install_script.sh && sudo ./install_script.sh > /dev/null
