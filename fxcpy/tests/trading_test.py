@@ -208,4 +208,6 @@ print('create_open_limit_order_test()')
 time.sleep(2)
 create_close_market_order_test()
 print('create_close_market_order_test()')
+time.sleep(3)
+session_handler.logout()
 

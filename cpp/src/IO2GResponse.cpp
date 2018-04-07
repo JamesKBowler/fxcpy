@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "IO2GResponse.h"
-#include "ResponseListener.h"
+#include "Listeners/ResponseListener.h"
 #include <boost/log/trivial.hpp>
 
 #if defined(_WIN32) || defined(WIN32)

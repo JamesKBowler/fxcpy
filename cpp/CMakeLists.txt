@@ -27,47 +27,52 @@ set(INSTALL_TARGETS_DEFAULT_ARGS
 
 include_directories(src ${CMAKE_CURRENT_BINARY_DIR}/src)
 
-set(SRCS src/pyforexconnect.cpp
+set(SRCS src/forexconnect.cpp
     src/IAddRef.cpp
+    src/IO2GRow.cpp
     src/IO2GColumn.cpp
-    src/IO2GLoginRules.cpp
-    src/IO2GPermissionChecker.cpp
+    src/IO2GTable.cpp
+
     src/IO2GRequest.cpp
     src/IO2GResponse.cpp
-    src/IO2GRow.cpp
     src/IO2GSession.cpp
-    src/ResponseListener.cpp
-    src/TableListener.cpp
-    src/SessionStatusListener.cpp
-    src/ClosedTradesColumnsEnum.cpp
-    src/IO2GClosedTradeRow.cpp
-    src/IO2GMarketDataResponseReader.cpp
-    src/IO2GMarketDataSnapshotResponseReader.cpp
-    src/IO2GMessageRow.cpp
-    src/IO2GOfferRow.cpp
-    src/IO2GOrderRow.cpp
-    src/IO2GSummaryRow.cpp
-    src/IO2GTablesUpdatesReader.cpp
-    src/IO2GTimeframe.cpp
-    src/IO2GTradeRow.cpp
+    src/O2GTransport.cpp
+
+    src/IO2GLoginRules.cpp
+    src/IO2GPermissionChecker.cpp
     src/IO2GTradingSettingsProvider.cpp
+
+    src/IO2GTimeframe.cpp
+    src/IO2GTimeConverter.cpp
+    src/O2GDateUtils.cpp
+
     src/O2G2ptr.cpp
     src/O2GEnum.cpp
     src/O2GRequestParamsEnum.cpp
-    src/IO2GLastOrderUpdateResponseReader.cpp
-    src/IO2GOrderResponseReader.cpp
-    src/IO2GSystemPropertiesReader.cpp
-    src/IO2GTimeConverter.cpp
-    src/O2GDateUtils.cpp
-    src/IO2GTable.cpp
-    src/O2GTransport.cpp
-    src/IO2GAccountRow.cpp
-    src/AccountsColumnsEnum.cpp
-    src/OffersColumnsEnum.cpp
-    src/OrdersColumnsEnum.cpp
-    src/SummariesColumnsEnum.cpp
-    src/TradesColumnsEnum.cpp
-    src/MessagesColumnsEnum.cpp)
+
+    src/Rows/IO2GClosedTradeRow.cpp
+    src/Rows/IO2GMessageRow.cpp
+    src/Rows/IO2GOfferRow.cpp
+    src/Rows/IO2GOrderRow.cpp
+    src/Rows/IO2GSummaryRow.cpp
+    src/Rows/IO2GTradeRow.cpp
+    src/Rows/IO2GAccountRow.cpp
+
+    src/Enums/ClosedTradesColumnsEnum.cpp
+    src/Enums/AccountsColumnsEnum.cpp
+    src/Enums/OffersColumnsEnum.cpp
+    src/Enums/OrdersColumnsEnum.cpp
+    src/Enums/SummariesColumnsEnum.cpp
+    src/Enums/TradesColumnsEnum.cpp
+    src/Enums/MessagesColumnsEnum.cpp
+
+    src/Readers/IO2GTablesUpdatesReader.cpp    
+    src/Readers/IO2GMarketDataResponseReader.cpp
+    src/Readers/IO2GMarketDataSnapshotResponseReader.cpp
+    src/Readers/IO2GLastOrderUpdateResponseReader.cpp
+    src/Readers/IO2GOrderResponseReader.cpp
+    src/Readers/IO2GSystemPropertiesReader.cpp
+)
 
 add_library(forexconnect SHARED ${SRCS})
 

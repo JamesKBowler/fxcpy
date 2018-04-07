@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "ForexConnectClient.h"
 
 BOOST_PYTHON_MODULE(forexconnect)
 {   

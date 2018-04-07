@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <IO2GTable.h>
-#include "TableListener.h"
+#include "Listeners/TableListener.h"
 using namespace boost::python;
 
 class IO2GGenericTableResponseReaderWrap : public IO2GGenericTableResponseReader, public wrapper < IO2GGenericTableResponseReader >
