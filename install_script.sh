@@ -30,7 +30,7 @@ apt-get update
 apt-get -y install python3-pip
 apt-get -y install build-essential
 apt-get -y install python3-dev
-apt-get -y install libtool m4 automake autogen
+apt-get -y install libtool m4 automake autogen make g++
 apt-get -y install libcurl4-openssl-dev
 apt-get -y install zlib1g-dev
 pip3 install ipython
