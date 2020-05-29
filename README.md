@@ -28,7 +28,7 @@ fxcpy is an open-soured python implementation of the Forexconnect API SDK offere
 * **Data** - fxcpy supports both live streaming and historical price data
 
 ## Requirements  
-- Ubuntu 16.04
+- Ubuntu 16.04/18.04
 - boost 1.65.1  
 - cmake 3.9.6  
 - ForexConnectAPI 1.4.1 (included)
