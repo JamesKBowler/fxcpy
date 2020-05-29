@@ -24,7 +24,7 @@ public:
 	void subscribeUpdate(O2GTableUpdateType updateType, IO2GTableListener *listener){ this->get_override("subscribeUpdate")(); }
 };
 
-//template class O2G2PtrWrap < IO2GSession >;
+//template class O2G2PtrWrap < IO2GSession > ;
 void export_O2G2PteredClasses()
 {
 	class_<O2G2PtrWrap<IAddRef>, boost::noncopyable>("O2GPtr", no_init);
