@@ -17,7 +17,7 @@ include_directories(
   ${FOREXCONNECT_INCLUDE_DIR})
 
 execute_process (
-  COMMAND python3 -c "import site; print(site.getsitepackages()[0])"
+  COMMAND python3 -c "import site, os; print(os.path.dirname(site.__file__) + '/site-packages')"
   OUTPUT_VARIABLE INSTALL_PYTHON_PKG_DIR OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 set(INSTALL_TARGETS_DEFAULT_ARGS
