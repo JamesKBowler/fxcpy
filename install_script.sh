@@ -26,13 +26,13 @@
 #
 #
 #
-apt-get update
-apt-get -y install python3-pip
-apt-get -y install build-essential
-apt-get -y install python3-dev
-apt-get -y install libtool m4 automake autogen make g++
-apt-get -y install libcurl4-openssl-dev
-apt-get -y install zlib1g-dev
+apt update
+apt -y install python3-pip
+apt -y install build-essential
+apt -y install python3.6-dev
+apt -y install libtool m4 automake autogen make g++
+apt -y install libcurl4-openssl-dev
+apt -y install zlib1g-dev
 su "$SUDO_USER" << 'EOF'
 mkdir .boost_install
 EOF
@@ -116,12 +116,8 @@ echo "using python : 3.6 : /usr/bin/python3.6 : /usr/include/python3.6m : /usr/l
 EOF
 cd boost_1_65_1 || exit
 ./b2 install threading=multi link=shared -j2 -d0
-#      ____                         ___        ____          ____ 
-#     / __/  ___________  __  __   <  /       / __ \        / __ \
-#    / /_| |/_/ ___/ __ \/ / / /   / /       / / / /       / / / /
-#   / __/>  </ /__/ /_/ / /_/ /   / /  _    / /_/ /  _    / /_/ / 
-#  /_/ /_/|_|\___/ .___/\__, /   /_/  (_)   \____/  (_)   \____/  
-#               /_/    /____/                                     
+
+# Install FXCPY
 cd ../..
 # Clean install files
 rm -rf .boost_install
